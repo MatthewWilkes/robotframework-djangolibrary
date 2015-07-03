@@ -34,7 +34,7 @@ class DjangoLibrary:
     # GLOBAL => Only one instance is created during the whole test execution.
     ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
 
-    def __init__(self, host="127.0.0.1", port=8000):
+    def __init__(self, host="127.0.0.1", port=8000, django_directory='.'):
         """Django2Library can be imported with optional arguments.
 
         `host` is the hostname of your Django instance. Default value is
@@ -43,12 +43,17 @@ class DjangoLibrary:
         `port` is the port number of your Django instance. Default value is
         8000.
 
+        `django_directory` is the directory where your Django lives. Default
+        value is the current directory '.'.
+
+
         Examples:
         | Library | Selenium2Library | timeout=15        | implicit_wait=0.5  | # Sets default timeout to 15 seconds and the default implicit_wait to 0.5 seconds. |  # noqa
         | Library | DjangoLibrary    | 127.0.0.1         | 55001              | # Sets default hostname to 127.0.0.1 and the default port to 55001.                |  # noqa
         """
         self.host = host
         self.port = port
+        self.django_directory = django_directory
 
     def clear_db(self):
         """Clear the Django default database by running
@@ -57,18 +62,18 @@ class DjangoLibrary:
         # XXX: Flush seems to be not working
         # args = [
         #     'python',
-        #     'mysite/manage.py',
+        #     '{}/manage.py'.format(self.django_directory),
         #     'flush',
         #     '--noinput',
         # ]
         args = [
             'rm',
-            'mysite/db.sqlite3',
+            '{}/db.sqlite3'.format(self.django_directory),
         ]
         subprocess.call(args)
         args = [
             'python',
-            'mysite/manage.py',
+            '{}/manage.py'.format(self.django_directory),
             'syncdb',
             '--noinput',
         ]
@@ -108,7 +113,7 @@ class DjangoLibrary:
         logger.console("-" * 78)
         args = [
             'python',
-            'mysite/manage.py',
+            '{}/manage.py'.format(self.django_directory),
             'runserver',
             '%s:%s' % (self.host, self.port),
             '--nothreading',
