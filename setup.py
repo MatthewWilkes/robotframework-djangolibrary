@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.0a3.dev-028c03ed5'
+version = '1.0a4.dev-4019f10db'
 
 setup(
     name='robotframework-djangolibrary',
@@ -12,6 +12,12 @@ setup(
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Web Environment',
         'Framework :: Django',
+        'Framework :: Django :: 1.5',
+        'Framework :: Django :: 1.6',
+        'Framework :: Django :: 1.7',
+        'Framework :: Django :: 1.8',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: Implementation :: CPython',
     ],
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords='robotframework django test',

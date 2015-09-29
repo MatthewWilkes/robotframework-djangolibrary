@@ -43,9 +43,17 @@ class DjangoLibrary:
         `port` is the port number of your Django instance. Default value is
         8000.
 
+        `path` is the path to your Django instance.
+
+        `manage` is the path to your Django instance manage.py.
+
+        `settings` is the path to your Django instance settings.py.
+
+        `db` is the path to your Django instance database.
+
         Examples:
         | Library | Selenium2Library | timeout=15        | implicit_wait=0.5  | # Sets default timeout to 15 seconds and the default implicit_wait to 0.5 seconds. |  # noqa
-        | Library | DjangoLibrary    | 127.0.0.1         | 55001              | # Sets default hostname to 127.0.0.1 and the default port to 55001.                |  # noqa
+        | Library | DjangoLibrary    | 127.0.0.1         | 55001              | path=mysite/mysite | manage=mysite/manage.py | settings=mysite.settings | db=mysite/db.sqlite3 | # Sets default hostname to 127.0.0.1 and the default port to 55001.                |  # noqa
         """
         self.host = host
         self.port = port
@@ -70,10 +78,16 @@ class DjangoLibrary:
             self.db,
         ]
         subprocess.call(args)
+        import django
+        try:
+            django.__version__
+            migrate_stmt = 'migrate'
+        except AttributeError:
+            migrate_stmt = 'syncdb'
         args = [
             'python',
             self.manage,
-            'syncdb',
+            migrate_stmt,
             '--noinput',
             '--settings=%s' % self.settings,
         ]
@@ -202,6 +216,28 @@ user.save()""" % {
         # assert autologin_cookie == "%s:%s" % (username, password)
         # cookies = selenium2lib.get_cookies()
         # assert cookies == u"autologin=%s:%s" % (username, password)
+
+    def load_fixture(self, fixture):
+        """Load a Django fixture into the database.
+        """
+        args = [
+            'python',
+            self.manage,
+            'loaddata',
+            '%s' % (fixture),
+            '--settings=%s' % self.settings,
+        ]
+
+        out = subprocess.Popen(
+            args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        stdout, stderr = out.communicate()
+        if stderr:
+            logger.console(stderr)
+        else:
+            logger.console(stdout)
 
     def autologin_logout(self):
         """Logout a user that has been logged in by the autologin_as keyword.

@@ -1,8 +1,19 @@
 
-1.0a3 (unreleased)
+1.0a4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Use 'migrate' instead of 'syncdb' for Django > 1.7.x.
+  [timo]
+
+
+1.0a3 (2015-09-28)
+------------------
+
+- Add list_classifiers to setup.py.
+  [timo]
+
+- Fix user creation and startup. This fixes #3.
+  [MatthewWilkes]
 
 
 1.0a2 (2015-06-25)
